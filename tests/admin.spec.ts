@@ -6,28 +6,30 @@ admin.initializeApp({
     credential: admin.credential.cert(serviceAccount)
 });
 
+const db = admin.firestore()
+
 // Get a Firestore reference
 
 // Example function to batch delete documents
 async function batchDeleteDocumentsByName(name: string) {
   try {
-    await fetch("http://localhost:8080/emulator/v1/projects/output-field/databases/(default)/documents")
+    // await fetch("http://localhost:8080/emulator/v1/projects/output-field/databases/(default)/documents")
 
     // Query documents to delete (e.g., where "toDelete" field is true)
-    // const querySnapshot = await db.collection('nominees')
-    //                             .where('name', '==', name)
-    //                             .get();
+    const querySnapshot = await db.collection('nominees')
+                                .where('name', '==', name)
+                                .get();
 
-    // // Create a batch object
-    // const batch = db.batch();
+    // Create a batch object
+    const batch = db.batch();
 
-    // // Add delete operations to the batch
-    // querySnapshot.forEach((doc) => {
-    //   batch.delete(doc.ref);
-    // });
+    // Add delete operations to the batch
+    querySnapshot.forEach((doc) => {
+      batch.delete(doc.ref);
+    });
 
-    // // Commit the batch
-    // await batch.commit();
+    // Commit the batch
+    await batch.commit();
 
     console.log('Batch delete successful.');
   } catch (error) {
